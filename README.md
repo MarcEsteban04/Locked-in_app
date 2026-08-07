@@ -8,15 +8,18 @@ See [docs/app_description.md](docs/app_description.md) for the product, and
 
 ## Status
 
-Sprint 1 (Project Initialization) is complete: navigation skeleton, design system, light/dark mode
-and the first reusable components. The screens behind the tabs are deliberate placeholders that name
-the sprint which fills them in. There is no backend yet — that is Sprint 2.
+Sprints 1 and 2 are complete. The app has its navigation skeleton, design system, light/dark mode
+and first reusable components; the backend schema, row level security and storage buckets are
+written and ready to apply. Screens behind the tabs are deliberate placeholders naming the sprint
+that fills them in. Accounts and sign-in are Sprint 3.
+
+Applying the schema needs your Supabase account — see [supabase/README.md](supabase/README.md).
 
 ## Getting started
 
 ```bash
 npm install
-cp .env.example .env.local   # values are optional until Sprint 2
+cp .env.example .env.local   # fill in your Supabase URL and publishable key
 npx expo start
 ```
 
@@ -54,10 +57,20 @@ src/
     navigation/           The custom flat tab bar
   constants/theme.ts      TypeScript mirror of the CSS tokens
   hooks/use-theme.ts      Resolved colour scheme and raw token values
-  lib/                    cn() class merging, typed env access
+  lib/                    cn() class merging, typed env access, Supabase client
+  types/database.ts       Shape of the Postgres schema
   global.css              Design tokens — the source of truth
+supabase/migrations/      Schema, RLS policies, storage buckets
 docs/                     Product description, roadmap, design system brief
 ```
+
+## Screen layout
+
+A screen is a stack of full-bleed `<Section>` blocks inside a `<Screen>`, not one padded column.
+Sections carry their own gutter and run edge to edge, so the sharp transition between two solid
+fills is what separates them — there are no rules or shadows available to do that job. `<Screen>`
+reserves room for the tab bar using the height the tab bar exports, so the constant can never drift
+out of sync with the component.
 
 ## Styling
 

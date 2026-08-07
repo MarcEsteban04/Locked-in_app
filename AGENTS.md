@@ -19,6 +19,31 @@ Read the exact versioned docs at https://docs.expo.dev/versions/v57.0.0/ before 
   Do not add a theme context or a manual theme toggle without discussing it first.
 - New primitives go in `src/components/ui/` and follow the existing shape: a `const` map of variant
   classes, then `cn(variantClasses, className)` so callers can always override.
+- Screens are a stack of full-bleed `<Section>` blocks inside a `<Screen>`. Do not wrap a screen in
+  one padded column — the sharp transition between solid fills is the layout.
+- `canvas < block < surface < block-strong` must stay distinct in **both** schemes. With no borders
+  or shadows, the fill is the only thing separating a card from its page; if two of these tokens
+  collide, the card silently disappears in one scheme.
+
+## Traps already hit once
+
+- **Never pass both `contentContainerClassName` and `contentContainerStyle` to a ScrollView.**
+  NativeWind maps the className onto `contentContainerStyle`, so the explicit prop wins and every
+  class is silently dropped. This shipped once as an app with no gutters and no gaps.
+- Anything that needs the tab bar's height imports `TAB_BAR_HEIGHT` from
+  `src/components/navigation/tab-bar`. It is applied as an explicit height there; do not re-guess it.
+
+## Backend
+
+- `supabase/migrations/` is the schema. Row level security is the entire authorisation model — the
+  publishable key ships in the bundle, so a table without a policy is world-readable. Every new
+  table needs RLS enabled and owner-scoped policies in the same migration that creates it.
+- Write policies as `(select auth.uid())`, not bare `auth.uid()` — the subquery form is evaluated
+  once per statement instead of once per row.
+- Storage paths are `<user_id>/<file>` and the policies authorise on that first segment. Build them
+  with `uploadPath()` from `src/lib/supabase.ts`.
+- `getSupabase()` is lazy on purpose. Do not create the client at module scope; a missing
+  `.env.local` would crash the app on boot instead of failing where it is used.
 
 ## Do not change without checking
 

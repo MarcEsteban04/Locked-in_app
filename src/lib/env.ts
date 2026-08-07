@@ -7,12 +7,17 @@
  * below is spelled out longhand instead of looped over.
  *
  * Everything here ships in the bundle in plain text. Anything secret belongs in
- * EAS Secrets and must be read server-side (Supabase Edge Functions, Sprint 2).
+ * EAS Secrets and must be read server-side (Supabase Edge Functions).
  */
 
 export const env = {
   supabaseUrl: process.env.EXPO_PUBLIC_SUPABASE_URL,
-  supabaseAnonKey: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY,
+  /**
+   * Supabase calls this the publishable key; older projects call the same value
+   * the anon key. Safe to ship — row level security, not key secrecy, is what
+   * protects the data.
+   */
+  supabasePublishableKey: process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY,
 } as const;
 
 export type EnvKey = keyof typeof env;
@@ -21,8 +26,8 @@ export type EnvKey = keyof typeof env;
  * Read a value that the app cannot run without, failing loudly at the call site
  * rather than surfacing as a confusing `undefined` deep inside a network layer.
  *
- * Kept separate from `env` so Sprint 1 can boot with an empty `.env.local` —
- * only the code that genuinely needs a variable pays for its absence.
+ * Kept separate from `env` so screens that need no backend still render — only
+ * the code that genuinely needs a variable pays for its absence.
  */
 export function requireEnv(key: EnvKey): string {
   const value = env[key];
@@ -34,4 +39,9 @@ export function requireEnv(key: EnvKey): string {
   }
 
   return value;
+}
+
+/** Whether the backend is configured. Lets a screen degrade instead of throw. */
+export function hasSupabaseConfig(): boolean {
+  return Boolean(env.supabaseUrl && env.supabasePublishableKey);
 }
