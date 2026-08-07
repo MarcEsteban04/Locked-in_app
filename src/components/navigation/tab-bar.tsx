@@ -22,6 +22,15 @@ import { cn } from '@/lib/cn';
 type TabBarProps = Parameters<NonNullable<React.ComponentProps<typeof Tabs>['tabBar']>>[0];
 
 /**
+ * Fixed height of the bar above the safe-area inset.
+ *
+ * Exported and applied as an explicit height rather than left to intrinsic
+ * layout, so `Screen` can reserve exactly this much room underneath its
+ * content. A guessed constant here silently hides the last item on a page.
+ */
+export const TAB_BAR_HEIGHT = 72;
+
+/**
  * Icon and label per route. Keyed by route name so the order here does not have
  * to match the order the navigator reports.
  */
@@ -46,8 +55,8 @@ export function TabBar({ state, navigation }: TabBarProps) {
 
   return (
     <View
-      className="flex-row items-stretch gap-1 bg-block px-3 pt-3"
-      style={{ paddingBottom: insets.bottom + 12 }}>
+      className="flex-row items-stretch gap-1 bg-block px-3 py-2"
+      style={{ height: TAB_BAR_HEIGHT + insets.bottom, paddingBottom: insets.bottom + 8 }}>
       {state.routes.map((route, index) => {
         const tab = TABS[route.name];
         if (!tab) return null;

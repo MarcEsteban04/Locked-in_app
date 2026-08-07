@@ -35,6 +35,9 @@ export const colors = {
     blockStrong: '#e5e7eb',
     edge: '#e5e7eb',
     surface: '#ffffff',
+
+    slab: '#111827',
+    slabOn: '#f9fafb',
   },
   dark: {
     canvas: '#030712',
@@ -43,24 +46,27 @@ export const colors = {
 
     brand: '#3b82f6',
     brandOn: '#ffffff',
-    brandTint: '#172554',
+    brandTint: '#1e3a8a',
 
     support: '#10b981',
     supportOn: '#022c22',
-    supportTint: '#022c22',
+    supportTint: '#064e3b',
 
     highlight: '#f59e0b',
     highlightOn: '#111827',
-    highlightTint: '#451a03',
+    highlightTint: '#78350f',
 
     danger: '#f87171',
     dangerOn: '#450a0a',
-    dangerTint: '#450a0a',
+    dangerTint: '#7f1d1d',
 
     block: '#111827',
-    blockStrong: '#1f2937',
-    edge: '#1f2937',
-    surface: '#111827',
+    surface: '#1f2937',
+    blockStrong: '#374151',
+    edge: '#374151',
+
+    slab: '#1f2937',
+    slabOn: '#f9fafb',
   },
 } as const;
 

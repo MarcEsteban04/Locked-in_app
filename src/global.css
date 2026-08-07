@@ -42,6 +42,10 @@
   --block-strong: #e5e7eb; /* Gray 200 — pressed/active block */
   --edge: #e5e7eb; /* Gray 200 — used sparingly */
   --surface: #ffffff; /* Cards sitting on a block background */
+
+  /* The design system's "dark gray" poster section. Inverts the page. */
+  --slab: #111827;
+  --slab-on: #f9fafb;
 }
 
 /**
@@ -56,24 +60,35 @@
 
     --brand: #3b82f6;
     --brand-on: #ffffff;
-    --brand-tint: #172554; /* Blue 950 — same role, inverted weight */
+    /* Tints sit at the -900 step, not -950. The darker step reads as mud
+       against a gray-950 canvas, and the design system is explicit that the
+       palette "avoids muddy tones". */
+    --brand-tint: #1e3a8a;
 
     --support: #10b981;
     --support-on: #022c22;
-    --support-tint: #022c22;
+    --support-tint: #064e3b;
 
     --highlight: #f59e0b;
     --highlight-on: #111827;
-    --highlight-tint: #451a03;
+    --highlight-tint: #78350f;
 
     --danger: #f87171;
     --danger-on: #450a0a;
-    --danger-tint: #450a0a;
+    --danger-tint: #7f1d1d;
 
+    /**
+     * canvas < block < surface < block-strong, each a step up the gray ramp.
+     * `surface` must never equal `block` or a card on a `block` page becomes
+     * invisible — with no borders or shadows available, the fill IS the edge.
+     */
     --block: #111827; /* Gray 900 */
-    --block-strong: #1f2937; /* Gray 800 */
-    --edge: #1f2937;
-    --surface: #111827;
+    --surface: #1f2937; /* Gray 800 */
+    --block-strong: #374151; /* Gray 700 — pressed/active */
+    --edge: #374151;
+
+    --slab: #1f2937;
+    --slab-on: #f9fafb;
   }
 }
 
@@ -107,6 +122,9 @@
   --color-block-strong: var(--block-strong);
   --color-edge: var(--edge);
   --color-surface: var(--surface);
+
+  --color-slab: var(--slab);
+  --color-slab-on: var(--slab-on);
 }
 
 @theme {

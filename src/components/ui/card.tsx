@@ -5,18 +5,28 @@ import { cn } from '@/lib/cn';
 /**
  * "Colour block" cards. Grouping is communicated by a solid fill — never by a
  * border or a shadow — so the tone you pick *is* the visual hierarchy.
+ *
+ * `surface` is a step up the gray ramp from `block`, so a default card is
+ * always visible on a `block` page in both colour schemes.
  */
 const tones = {
-  /** Default card sitting on a `bg-block` page. */
+  /** Default card. Reads as raised against a `block` page without any depth. */
   surface: 'bg-surface',
-  /** Card sitting on a white page — the fill supplies the separation. */
+  /** For a card on a `canvas` page — the fill supplies the separation. */
   block: 'bg-block',
-  brand: 'bg-brand-tint',
-  support: 'bg-support-tint',
-  highlight: 'bg-highlight-tint',
-  danger: 'bg-danger-tint',
-  /** Full-strength fill for a single hero card. Use sparingly. */
-  brandSolid: 'bg-brand',
+
+  /** Soft tints, for supporting cards that should not shout. */
+  brandSoft: 'bg-brand-tint',
+  supportSoft: 'bg-support-tint',
+  highlightSoft: 'bg-highlight-tint',
+  dangerSoft: 'bg-danger-tint',
+
+  /** Full-strength fills. One per screen at most, or they stop being loud. */
+  brand: 'bg-brand',
+  support: 'bg-support',
+  highlight: 'bg-highlight',
+  danger: 'bg-danger',
+  slab: 'bg-slab',
 } as const;
 
 const padding = {

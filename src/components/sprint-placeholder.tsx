@@ -2,8 +2,10 @@ import { type LucideIcon } from 'lucide-react-native';
 import { View } from 'react-native';
 
 import { Badge } from '@/components/ui/badge';
+import { IconBadge, type IconBadgeAccent } from '@/components/ui/icon-badge';
+import { Section, type SectionTone } from '@/components/ui/section';
 import { Text } from '@/components/ui/text';
-import { useThemeColors } from '@/hooks/use-theme';
+import { cn } from '@/lib/cn';
 
 export interface SprintPlaceholderProps {
   icon: LucideIcon;
@@ -11,36 +13,57 @@ export interface SprintPlaceholderProps {
   description: string;
   /** Which roadmap sprint fills this screen in, from docs/project_development.md. */
   sprint: string;
+  /** What the screen will do, as a short list. Keeps an empty tab informative. */
+  bullets?: readonly string[];
+  accent?: IconBadgeAccent;
+  tone?: SectionTone;
 }
 
 /**
  * Stand-in for a screen the navigation skeleton reaches but a later sprint
- * builds. It states which sprint owns the screen so an empty tab reads as
- * planned scope rather than something broken or forgotten.
+ * builds. It names the owning sprint and lists what is coming, so an empty tab
+ * reads as planned scope rather than something broken or forgotten.
  */
 export function SprintPlaceholder({
-  icon: Icon,
+  icon,
   title,
   description,
   sprint,
+  bullets = [],
+  accent = 'brand',
+  tone = 'canvas',
 }: SprintPlaceholderProps) {
-  const themeColors = useThemeColors();
+  const onSlab = tone === 'slab';
 
   return (
-    <View className="flex-1 items-center justify-center gap-5 py-16">
-      {/* Icon in a solid colour block — the design system's circle treatment. */}
-      <View className="h-16 w-16 items-center justify-center rounded-full bg-brand">
-        <Icon size={28} strokeWidth={2.5} color={themeColors.brandOn} />
-      </View>
+    <Section tone={tone} size="lg">
+      <IconBadge icon={icon} accent={accent} size="lg" />
 
-      <View className="items-center gap-2">
-        <Text variant="heading">{title}</Text>
-        <Text variant="muted" className="max-w-[280px] text-center">
+      <View className="gap-2">
+        <Text variant="title" className={cn(onSlab && 'text-slab-on')}>
+          {title}
+        </Text>
+        <Text variant="body" className={cn('opacity-70', onSlab && 'text-slab-on')}>
           {description}
         </Text>
       </View>
 
+      {bullets.length > 0 ? (
+        <View className="gap-3">
+          {bullets.map((bullet) => (
+            <View key={bullet} className="flex-row items-center gap-3">
+              {/* A solid square, not a bullet glyph — geometry over typography
+                  for list markers keeps the grid reading as deliberate. */}
+              <View className="h-2 w-2 rounded-[2px] bg-brand" />
+              <Text variant="body" className={cn('flex-1', onSlab && 'text-slab-on')}>
+                {bullet}
+              </Text>
+            </View>
+          ))}
+        </View>
+      ) : null}
+
       <Badge label={sprint} tone="highlight" />
-    </View>
+    </Section>
   );
 }
