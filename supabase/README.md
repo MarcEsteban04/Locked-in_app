@@ -24,11 +24,35 @@ The project itself can't be created from this repo — it needs your Supabase ac
    npx supabase db push
    ```
 
-4. **Authentication → Providers**: enable Email. Turn on "Confirm email" for production. Google
-   and Apple sign-in are Sprint 3 — they need OAuth client IDs and a redirect URL of
-   `lockedinapp://` (the `scheme` in [app.json](../app.json)).
-5. **Authentication → URL Configuration**: add `lockedinapp://` to the redirect allow list, or
-   magic links and OAuth will bounce.
+4. **Authentication → Providers → Email**: enable it. "Confirm email" on is the safe default; the
+   sign-up screen already handles the no-session-yet case and tells the user to check their inbox.
+5. **Authentication → URL Configuration**: add both `lockedinapp://**` and `exp://**` to the
+   redirect allow list. Without them, OAuth and password-reset links bounce. `exp://` is what Expo
+   Go uses in development — drop it before production.
+
+### Google
+
+Create an OAuth client in Google Cloud Console (**APIs & Services → Credentials**), type **Web
+application**, and add `https://brbawjdmlltjdciivxen.supabase.co/auth/v1/callback` as an authorised
+redirect URI. Paste the client ID and secret into **Authentication → Providers → Google**.
+
+The app uses the browser flow (`signInWithOAuth`), not the native SDK, so this works in Expo Go and
+in a development build with no extra native config.
+
+### Apple
+
+Enable **Authentication → Providers → Apple**. Under "Client IDs" add:
+
+- `host.exp.Exponent` — required to test in Expo Go
+- your real bundle identifier, once you have one
+
+iOS uses the native sheet via `expo-apple-authentication` (`signInWithIdToken`); Android falls back
+to the same browser flow as Google. Apple returns the user's full name **only on the first
+sign-in**, so the session provider writes it to user metadata immediately — if that write is ever
+removed, the name is unrecoverable.
+
+Note that offering Google sign-in on iOS obliges you to offer Apple sign-in too, per App Store
+review guideline 4.8.
 
 Restart the bundler with `npx expo start --clear` afterwards — Expo inlines env vars at build
 time and won't pick up a running edit.

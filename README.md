@@ -8,12 +8,26 @@ See [docs/app_description.md](docs/app_description.md) for the product, and
 
 ## Status
 
-Sprints 1 and 2 are complete. The app has its navigation skeleton, design system, light/dark mode
-and first reusable components; the backend schema, row level security and storage buckets are
-written and ready to apply. Screens behind the tabs are deliberate placeholders naming the sprint
-that fills them in. Accounts and sign-in are Sprint 3.
+Sprints 1–3 are complete: design system and navigation, the backend schema with row level security
+and storage, and the full authentication flow (email, register, password reset, Google, Apple,
+persisted sessions). Screens behind the tabs are deliberate placeholders naming the sprint that
+fills them in. Subjects and uploads are next.
 
-Applying the schema needs your Supabase account — see [supabase/README.md](supabase/README.md).
+Applying the schema and enabling the auth providers needs your Supabase account — see
+[supabase/README.md](supabase/README.md).
+
+## Authentication
+
+Route protection uses `Stack.Protected` in [src/app/_layout.tsx](src/app/_layout.tsx), which mounts
+a different group rather than redirecting after render, so a signed-out user never briefly sees the
+dashboard. State lives in [src/lib/auth/session.tsx](src/lib/auth/session.tsx).
+
+**If Supabase isn't configured the auth gate is bypassed** and the app runs unauthenticated, with a
+notice on Profile. A sign-in screen that cannot succeed is worse than no sign-in screen. Fill in
+`.env.local` and the gate turns itself on — there is no flag to flip.
+
+Never put a **service-role key** in `.env.local` or anywhere else in this repo. It bypasses every
+RLS policy. It belongs in Edge Function secrets or EAS Secrets, read server-side only.
 
 ## Getting started
 

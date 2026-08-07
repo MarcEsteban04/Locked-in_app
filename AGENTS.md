@@ -44,6 +44,22 @@ Read the exact versioned docs at https://docs.expo.dev/versions/v57.0.0/ before 
   with `uploadPath()` from `src/lib/supabase.ts`.
 - `getSupabase()` is lazy on purpose. Do not create the client at module scope; a missing
   `.env.local` would crash the app on boot instead of failing where it is used.
+- **A service-role key must never appear in this repo, in `.env.local`, or in any `EXPO_PUBLIC_*`
+  variable.** It bypasses every RLS policy. Server-side only — Edge Function secrets or EAS Secrets.
+- Only `EXPO_PUBLIC_*` variables are inlined by Expo. A correct value under any other name is
+  silently invisible to the app, with no warning.
+
+## Auth
+
+- Route protection is `Stack.Protected` in `src/app/_layout.tsx`; auth state is
+  `src/lib/auth/session.tsx`. Do not add redirect-on-mount guards alongside it.
+- The gate is bypassed when `hasSupabaseConfig()` is false, so the app stays usable without
+  credentials. Keep that escape hatch when touching the guard.
+- Password recovery signs the user IN, so `reset-password` is gated on the `isRecovering` flag, not
+  on the absence of a session. Guarding it like a signed-out route sends the user to the dashboard
+  and they never get to set the password they came for.
+- Apple returns the user's full name only on the first sign-in. The session provider persists it
+  immediately; removing that write loses the name permanently.
 
 ## Do not change without checking
 
