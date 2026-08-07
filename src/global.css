@@ -1,9 +1,135 @@
+@import 'tailwindcss';
+@import 'nativewind/theme';
+
+/**
+ * Locked In — design tokens.
+ *
+ * Single source of truth for the flat design system described in
+ * docs/design_prompt.xml. Nothing in the app should hardcode a hex value;
+ * everything reads a `--color-*` token so a palette change lands everywhere.
+ *
+ * The light palette is taken verbatim from the design doc. The dark palette is
+ * derived from it: the doc only specifies light, but a light/dark app is a
+ * Sprint 1 deliverable, so dark mirrors light's structure one step down the
+ * same Tailwind gray ramp (gray-100/200 -> gray-900/800) and keeps the accent
+ * hues identical, which preserves the "confident reduction" intent rather than
+ * inventing a second personality for dark mode.
+ */
+
+/* Light — the canvas. Values straight from the design system. */
 :root {
-  --font-display:
-    Spline Sans, Inter, ui-sans-serif, system-ui, sans-serif, Apple Color Emoji, Segoe UI Emoji,
-    Segoe UI Symbol, Noto Color Emoji;
-  --font-mono:
-    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
-  --font-rounded: 'SF Pro Rounded', 'Hiragino Maru Gothic ProN', Meiryo, 'MS PGothic', sans-serif;
-  --font-serif: Georgia, 'Times New Roman', serif;
+  --canvas: #ffffff;
+  --ink: #111827; /* Gray 900 */
+  --ink-soft: #6b7280; /* Gray 500 — secondary copy */
+
+  --brand: #3b82f6; /* Blue 500 — the "Action" color */
+  --brand-on: #ffffff;
+  --brand-tint: #eff6ff; /* Blue 50 — color-block card bg */
+
+  --support: #10b981; /* Emerald 500 */
+  --support-on: #ffffff;
+  --support-tint: #ecfdf5; /* Emerald 50 */
+
+  --highlight: #f59e0b; /* Amber 500 */
+  --highlight-on: #111827; /* Amber is too light for white text — AA needs ink */
+  --highlight-tint: #fffbeb; /* Amber 50 */
+
+  --danger: #ef4444; /* Red 500 */
+  --danger-on: #ffffff;
+  --danger-tint: #fef2f2;
+
+  --block: #f3f4f6; /* Gray 100 — secondary backgrounds */
+  --block-strong: #e5e7eb; /* Gray 200 — pressed/active block */
+  --edge: #e5e7eb; /* Gray 200 — used sparingly */
+  --surface: #ffffff; /* Cards sitting on a block background */
+}
+
+/**
+ * Dark. react-native-css maps this to the OS color scheme, so `Appearance`
+ * changes re-render without any JS theme context.
+ */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --canvas: #030712; /* Gray 950 */
+    --ink: #f9fafb; /* Gray 50 */
+    --ink-soft: #9ca3af; /* Gray 400 */
+
+    --brand: #3b82f6;
+    --brand-on: #ffffff;
+    --brand-tint: #172554; /* Blue 950 — same role, inverted weight */
+
+    --support: #10b981;
+    --support-on: #022c22;
+    --support-tint: #022c22;
+
+    --highlight: #f59e0b;
+    --highlight-on: #111827;
+    --highlight-tint: #451a03;
+
+    --danger: #f87171;
+    --danger-on: #450a0a;
+    --danger-tint: #450a0a;
+
+    --block: #111827; /* Gray 900 */
+    --block-strong: #1f2937; /* Gray 800 */
+    --edge: #1f2937;
+    --surface: #111827;
+  }
+}
+
+/**
+ * `inline` makes the generated utilities emit `var(--canvas)` instead of baking
+ * the literal in at build time — that indirection is what lets the media query
+ * above repaint the whole app.
+ */
+@theme inline {
+  --color-canvas: var(--canvas);
+  --color-ink: var(--ink);
+  --color-ink-soft: var(--ink-soft);
+
+  --color-brand: var(--brand);
+  --color-brand-on: var(--brand-on);
+  --color-brand-tint: var(--brand-tint);
+
+  --color-support: var(--support);
+  --color-support-on: var(--support-on);
+  --color-support-tint: var(--support-tint);
+
+  --color-highlight: var(--highlight);
+  --color-highlight-on: var(--highlight-on);
+  --color-highlight-tint: var(--highlight-tint);
+
+  --color-danger: var(--danger);
+  --color-danger-on: var(--danger-on);
+  --color-danger-tint: var(--danger-tint);
+
+  --color-block: var(--block);
+  --color-block-strong: var(--block-strong);
+  --color-edge: var(--edge);
+  --color-surface: var(--surface);
+}
+
+@theme {
+  /**
+   * Outfit, per the design system. React Native cannot synthesise weights — it
+   * needs a distinct family per weight — so weight is a font-family utility
+   * (`font-bold`), not a fontWeight. Keys must match the names passed to
+   * `useFonts` in src/app/_layout.tsx.
+   */
+  --font-regular: 'Outfit_400Regular';
+  --font-medium: 'Outfit_500Medium';
+  --font-semibold: 'Outfit_600SemiBold';
+  --font-bold: 'Outfit_700Bold';
+  --font-extrabold: 'Outfit_800ExtraBold';
+  --font-sans: 'Outfit_400Regular';
+
+  /* Explicit px: the design system specifies 6/8px, and rem conversion on
+     native depends on a root font size we would rather not depend on. */
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+
+  /* Zero artificial depth — the Z-axis does not exist in this design system.
+     Declared so `shadow-none`/`elevation-none` read as deliberate, not missing. */
+  --elevation-none: 0;
 }

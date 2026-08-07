@@ -1,14 +1,21 @@
+import { useColorScheme } from 'react-native';
+
+import { colors, type ColorScheme } from '@/constants/theme';
+
 /**
- * Learn more about light and dark modes:
- * https://docs.expo.dev/guides/color-schemes/
+ * Resolved colour scheme, defaulting to light when the OS reports no preference.
  */
+export function useScheme(): ColorScheme {
+  return useColorScheme() === 'dark' ? 'dark' : 'light';
+}
 
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
-
-export function useTheme() {
-  const scheme = useColorScheme();
-  const theme = scheme === 'unspecified' ? 'light' : scheme;
-
-  return Colors[theme];
+/**
+ * Raw token values for the active scheme.
+ *
+ * Only reach for this when an API refuses a `className` — status bar style,
+ * React Navigation's theme, SVG icon colours. Styling a View or Text this way
+ * bypasses the design system and will drift.
+ */
+export function useThemeColors() {
+  return colors[useScheme()];
 }
